@@ -3,7 +3,6 @@
 # Author: Andrew Tsyrkunov
 # Contacts: <andrey.pwn@gmail.com>
 ##################################################################################
-import asyncio
 import global_vars
 from datetime import datetime
 from fastapi import FastAPI

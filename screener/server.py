@@ -9,8 +9,8 @@ from app.api import app
 
 def start() -> None:
     uvicorn.run(
-        app, host="localhost", port=8000,
-        log_level="info"#, log_config=f"log.ini"
+        app, host="0.0.0.0", port=8000,
+        log_level="info"
     )
 
 

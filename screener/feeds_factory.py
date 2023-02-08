@@ -1,5 +1,4 @@
-from sockets import binance_ws
-from sockets import okx_ws
+from sockets import binance_ws, okx_ws
 from typing import Any
 
 
