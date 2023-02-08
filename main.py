@@ -4,13 +4,13 @@
 # Contacts: <andrey.pwn@gmail.com>
 ##################################################################################
 import uvicorn
-from api import app
+from app.api import app
 
 
 def start() -> None:
     uvicorn.run(
         app, host="localhost", port=8000,
-        log_level="info", log_config=f"log.ini"
+        log_level="info"#, log_config=f"log.ini"
     )
 
 
