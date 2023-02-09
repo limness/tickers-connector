@@ -1,6 +1,7 @@
 import asyncio
 import json
 import websockets
+from loguru import logger
 
 
 class BinanceSocket:
@@ -14,12 +15,14 @@ class BinanceSocket:
     async def create_connection(self):
         websocket_resource_url = f"wss://stream.binance.com:9443/ws/!ticker@arr"
         async with websockets.connect(websocket_resource_url) as ws:
+            logger.info(f"Connection with Binance feed has been created!")
             await ws.send(json.dumps(self.msg))
             await self.consumer_handler(ws)
 
     async def consumer_handler(self, ws):
         async for msg in ws:
-            print(msg)
+            # print(msg)
+            logger.debug(f"Message Binance")
             # todo: logics
             # tickers = json.loads(msg)
             await asyncio.sleep(5.0)

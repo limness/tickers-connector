@@ -5,8 +5,11 @@ from typing import Any
 class FeedFactory:
 
     feeds = {
-        "Binance": binance_ws.BinanceSocket,
+        # set OKX first in the dict, setting the connection priority
         "OKX": okx_ws.OKXSocket,
+        # third party
+        "Binance": binance_ws.BinanceSocket,
+        # ...
     }
 
     def create(self, feed_name: str = "Binance") -> Any:

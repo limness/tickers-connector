@@ -4,11 +4,12 @@
 # Contacts: <andrey.pwn@gmail.com>
 ##################################################################################
 import global_vars
+import asyncio
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi import Response
 from fastapi import status
-from utils import init_tickers
+from utils import init_tickers, init_connections
 
 
 app = FastAPI()
@@ -20,7 +21,7 @@ async def startup_event():
     init_tickers()
 
     # Initialize all sockets
-    # asyncio.create_task(socket())
+    asyncio.create_task(init_connections())
 
 
 @app.get("/api/ping", status_code=status.HTTP_200_OK)

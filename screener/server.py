@@ -4,7 +4,13 @@
 # Contacts: <andrey.pwn@gmail.com>
 ##################################################################################
 import uvicorn
+import sys
+from loguru import logger
 from app.api import app
+
+logger.remove(0)
+logger.add(sys.stderr, level="INFO", backtrace=True, diagnose=True)
+logger.add("logs/outputs.log", level="DEBUG", backtrace=True, diagnose=True)
 
 
 def start() -> None:
