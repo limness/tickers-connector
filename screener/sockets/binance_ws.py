@@ -10,7 +10,7 @@ class BinanceSocket:
 
     msg = {
         "method": "SUBSCRIBE",
-        "params": ["!miniTicker@arr"],
+        "params": [],
         "id": 1
     }
 
@@ -18,22 +18,25 @@ class BinanceSocket:
         websocket_resource_url = f"wss://stream.binance.com:443/ws"
         async with websockets.connect(websocket_resource_url) as ws:
             logger.info(f"Connection with Binance feed has been created!")
+
+            for ticker in constants.binance_tickers:
+                self.msg["params"].append(ticker.lower() + "@ticker")
+
             await ws.send(json.dumps(self.msg))
             await self.consumer_handler(ws)
 
     async def consumer_handler(self, ws):
         async for msg in ws:
-            tickers = json.loads(msg)
+            ticker = json.loads(msg)
             logger.debug(f"Message Binance {msg}")
 
-            if not isinstance(tickers, list):
+            if "s" not in ticker:
                 continue
 
-            for ticker in tickers:
-                if ticker["s"] not in constants.binance_tickers:
-                    continue
-                ticker_name = constants.binance_tickers[ticker["s"]]
-                global_vars.tickers[ticker_name] = float(ticker["c"])
+            if ticker["s"] not in constants.binance_tickers:
+                continue
+            ticker_name = constants.binance_tickers[ticker["s"]]
+            global_vars.tickers[ticker_name] = float(ticker["c"])
 
             await asyncio.sleep(5.0)
 

@@ -22,6 +22,7 @@ class OKXSocket:
         websocket_resource_url = f"wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999"
         async with websockets.connect(websocket_resource_url) as ws:
             logger.info(f"Connection with OKX feed has been created!")
+            d = 0 / 0
             for ticker in constants.okx_tickers:
                 self.msg["args"][0]["instId"] = ticker
                 await ws.send(json.dumps(self.msg))
