@@ -10,12 +10,7 @@ class OKXSocket:
 
     msg = {
         "op": "subscribe",
-        "args": [
-            {
-                "channel": "index-tickers",
-                "instId": "..."
-            }
-        ]
+        "args": []
     }
 
     async def create_connection(self):
@@ -23,7 +18,12 @@ class OKXSocket:
         async with websockets.connect(websocket_resource_url) as ws:
             logger.info(f"Connection with OKX feed has been created!")
             for ticker in constants.okx_tickers:
-                self.msg["args"][0]["instId"] = ticker
+                self.msg["args"].append(
+                    {
+                        "channel": "index-tickers",
+                        "instId": ticker
+                    }
+                )
                 await ws.send(json.dumps(self.msg))
             await self.consumer_handler(ws)
 
