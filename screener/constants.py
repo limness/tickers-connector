@@ -2,10 +2,20 @@
 
 # allowed tickers to retrieve data
 allowed_tickers = {
-    "ETH-RUB",
+    "BTC-USDT",
+    "SOL-USDT",
+    "ETH-USDT",
 }
 
 # maps
 binance_tickers = {
-    "ETHRUB": "ETH-RUB"
+    "BTCUSDT": "ETH-USDT",
+    "SOLUSDT": "SOL-USDT",
+    "ETHUSDT": "ETH-USDT"
+}
+
+okx_tickers = {
+    "BTC-USDT": "BTC-USDT",
+    "SOL-USDT": "SOL-USDT",
+    "ETH-USDT": "ETH-USDT"
 }

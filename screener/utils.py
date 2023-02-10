@@ -14,14 +14,14 @@ def init_tickers() -> None:
     :return: Nothing
     """
     try:
-        response = requests.get("https://api4.binance.com/api/v1/ticker/price")
-        tickers = response.json()
+        response = requests.get("https://aws.okx.com/api/v5/market/tickers?instType=SPOT")
+        tickers = response.json()["data"]
 
         for ticker in tickers:
-            if ticker["symbol"] not in constants.binance_tickers:
+            if ticker["instId"] not in constants.okx_tickers:
                 continue
-            binance_ticker = constants.binance_tickers[ticker["symbol"]]
-            global_vars.tickers[binance_ticker] = float(ticker["price"])
+            okx_ticker = constants.okx_tickers[ticker["instId"]]
+            global_vars.tickers[okx_ticker] = float(ticker["last"])
 
     except Exception as ex:
         logger.exception(f"Something is going wrong")
@@ -31,12 +31,12 @@ async def init_connections() -> None:
 
     feed_factory = FeedFactory()
 
-    # define the name of the feed that will
-    # be connected to in the beginning
-    feed_queue_name = "OKX"
-
     # get list of feeds without OKX
     feeds = list(feed_factory.feeds.keys())
+
+    # define the name of the feed that will
+    # be connected to in the beginning "OKX"
+    feed_queue_name = feeds[0]
 
     while True:
         feed = feed_factory.create(feed_queue_name)

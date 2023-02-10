@@ -2,6 +2,8 @@ import asyncio
 import json
 import websockets
 from loguru import logger
+import constants
+import global_vars
 
 
 class OKXSocket:
@@ -10,9 +12,8 @@ class OKXSocket:
         "op": "subscribe",
         "args": [
             {
-                "channel": "tickers",
-                "instType": "SPOT",
-                "instId": "BTC-USDT"
+                "channel": "index-tickers",
+                "instId": "..."
             }
         ]
     }
@@ -21,16 +22,21 @@ class OKXSocket:
         websocket_resource_url = f"wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999"
         async with websockets.connect(websocket_resource_url) as ws:
             logger.info(f"Connection with OKX feed has been created!")
-            await ws.send(json.dumps(self.msg))
+            for ticker in constants.okx_tickers:
+                self.msg["args"][0]["instId"] = ticker
+                await ws.send(json.dumps(self.msg))
             await self.consumer_handler(ws)
 
     async def consumer_handler(self, ws):
         async for msg in ws:
-            print(msg)
-            logger.debug(f"Message OKX")
-            # todo: logics
-            # tickers = json.loads(msg)
-            await asyncio.sleep(5.0)
+            ticker = json.loads(msg)
+            logger.debug(f"Message OKX {msg}")
+
+            if "data" in ticker:
+                ticker_name = constants.okx_tickers[ticker["data"][0]["instId"]]
+                global_vars.tickers[ticker_name] = float(ticker["data"][0]["idxPx"])
+
+        await asyncio.sleep(5.0)
 
 
 if __name__ == "__main__":

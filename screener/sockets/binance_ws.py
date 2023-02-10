@@ -1,6 +1,8 @@
 import asyncio
 import json
 import websockets
+import constants
+import global_vars
 from loguru import logger
 
 
@@ -8,12 +10,12 @@ class BinanceSocket:
 
     msg = {
         "method": "SUBSCRIBE",
-        "params": ["!ticker@arr"],
+        "params": ["!miniTicker@arr"],
         "id": 1
     }
 
     async def create_connection(self):
-        websocket_resource_url = f"wss://stream.binance.com:9443/ws/!ticker@arr"
+        websocket_resource_url = f"wss://stream.binance.com:443/ws"
         async with websockets.connect(websocket_resource_url) as ws:
             logger.info(f"Connection with Binance feed has been created!")
             await ws.send(json.dumps(self.msg))
@@ -21,10 +23,18 @@ class BinanceSocket:
 
     async def consumer_handler(self, ws):
         async for msg in ws:
-            # print(msg)
-            logger.debug(f"Message Binance")
-            # todo: logics
-            # tickers = json.loads(msg)
+            tickers = json.loads(msg)
+            logger.debug(f"Message Binance {msg}")
+
+            if not isinstance(tickers, list):
+                continue
+
+            for ticker in tickers:
+                if ticker["s"] not in constants.binance_tickers:
+                    continue
+                ticker_name = constants.binance_tickers[ticker["s"]]
+                global_vars.tickers[ticker_name] = float(ticker["c"])
+
             await asyncio.sleep(5.0)
 
 
